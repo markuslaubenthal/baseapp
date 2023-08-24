@@ -15,7 +15,7 @@ stages:
 testing:
   stage: test
   script:
-    - pytest --junitxml=report.xml
+    - pytest --junitxml=./reports/tests.xml
   artifacts:
     when: always
     reports:
