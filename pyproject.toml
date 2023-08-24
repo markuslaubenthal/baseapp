@@ -1,0 +1,14 @@
+[tool.poetry]
+name = "baseapp"
+version = "0.1.0"
+description = ""
+authors = ["Markus Laubenthal <mail@markuslaubenthal.de>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
