@@ -64,4 +64,4 @@ class BaseApp:
         self.run(*args, **kwargs)
         
     def run(self, *args, **kwargs):
-        self.cli()
+        return self.cli()

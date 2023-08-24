@@ -19,10 +19,6 @@ class TestBaseApp:
         
         runner = CliRunner()
         result = runner.invoke(app.cli, ['--debug', 'mock_routine'], standalone_mode=False)
-        import logging
-        assert result.return_value == 3
-        assert result.exit_code == 0
         
-        # assert len(app.cli.commands) == 2
-        # assert "routine" in app.cli.commands
-        # assert "service" in app.cli.commands
+        assert result.exit_code == 0
+        assert 'Result is 3' in result.output

@@ -52,4 +52,7 @@ class Parameter(Generic[T]):
         if isinstance(value, baseClass):
             return value
         else:
-            return baseClass(value)
+            try:
+                return baseClass(value)
+            except:
+                return value

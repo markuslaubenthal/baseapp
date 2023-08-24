@@ -10,9 +10,11 @@ class MockRoutine(BaseRoutine):
     mock_parameter = Parameter[str]("mock_parameter", default = "mock_value").env("MOCK_PARAMETER")
     a = Parameter[int]("a", default = 1).env("INT_A")
     b = Parameter[int]("b", default = 2).env("INT_B")
-        
+    result = Parameter[int]("result", default = None)
+    
     def run(self):
-        return self.a + self.b
+        self.result = self.a + self.b
+        print("Result is", self.result)
         
 @pytest.fixture
 def mockRoutineProvider():
