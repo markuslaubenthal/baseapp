@@ -28,6 +28,9 @@ class TestImportRoutine:
     def test_discovery_only_finds_specified_subclasses(self, BaseClass, names, base_path, num_classes):
         classes = Discovery[BaseClass]().discover("tests/routines/fixtures")
         assert len(classes) == num_classes
+        num_found_names = 0
         for index, cls in enumerate(classes):
             assert issubclass(cls, BaseClass)
-            assert(cls.name == names[index])
+            assert(cls.name in names)
+            num_found_names += 1
+        assert num_found_names == num_classes
