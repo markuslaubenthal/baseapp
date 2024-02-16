@@ -9,6 +9,7 @@ class AppCLIBuilder:
         @click.group()
         @click.option('--debug/--no-debug', default=False)
         def cli(debug):
-            pass
+            self.app.setLogLevel(logging.DEBUG if debug else logging.INFO)
+            self.app.setDebug(debug)
             
         return cli

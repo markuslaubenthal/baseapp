@@ -9,7 +9,7 @@ BaseClass = TypeVar("BaseClass")
 
 class Discovery(Generic[BaseClass]):
     """Discovers Routines in the routine folder of the app."""
-    
+    logger = logging.getLogger("BaseApp")
     def discover(self, base_path) -> List[BaseClass]:
         """
         Discover routines and import them. A routine is a directory or file in the routines folder.
@@ -26,14 +26,13 @@ class Discovery(Generic[BaseClass]):
         
         baseClass = get_args(self.__orig_class__)[0]
         
-        logging.info(f"Importing module {path}")
+        self.logger.info(f"Importing module {path}")
         module_name = ".".join(path.replace("/", ".").split(".")[0:-1])
         spec = importlib.util.spec_from_file_location(module_name, path)
         module = importlib.util.module_from_spec(spec)
         
         sys.modules[module_name] = module
         spec.loader.exec_module(module)
-        
         if className is None:
             className = os.path.basename(path).split(".")[0]
         
@@ -43,6 +42,26 @@ class Discovery(Generic[BaseClass]):
             return routine
         except Exception as e:
             raise ImportError(f"Could not import routine {className} from {path}") from e
+    
+    @staticmethod
+    def get_module_from_path(path):
+        module_name = "baseapp.registry.routines." + ".".join(path.replace("/", ".").split(".")[-2:-1])
+        # module_name = ".".join(path.replace("/", ".").split(".")[0:-1])
+        spec = importlib.util.spec_from_file_location(module_name, path)
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+        sys.modules[module_name] = module
+        return module_name, module
+    
+    
+    @staticmethod
+    def import_attribute_from_module(attributeName, module):
+        try:
+            attribute = getattr(module, attributeName)
+            return attribute
+        except Exception as e:
+            raise ImportError(f"Could not import attribute {attributeName} from {module.__name__}") from e
+        
     
     def get_routines_from_module(self, module) -> bool:
         """
@@ -68,17 +87,20 @@ class Discovery(Generic[BaseClass]):
                 routines += self.find_routines(full_path, recursive=recursive)
             elif file.endswith(".py"):
                 try:
-                    module_name = ".".join(path.replace("/", ".").split(".")[0:-1])
-                    spec = importlib.util.spec_from_file_location(module_name, full_path)
-                    module = importlib.util.module_from_spec(spec)
-                    spec.loader.exec_module(module)
-                    
-                    routines += self.get_routines_from_module(module)
-                
+                    # module_name = ".".join(path.replace("/", ".").split(".")[0:-1])
+                    # spec = importlib.util.spec_from_file_location(module_name, full_path)
+                    # module = importlib.util.module_from_spec(spec)
+                    # sys.modules[module_name] = module
+                    # spec.loader.exec_module(module)
+                    module_name, module = self.get_module_from_path(full_path)
+                    current_routines = self.get_routines_from_module(module)
+                    [cr._setPath(full_path) for cr in current_routines]
+                    routines += current_routines
+
                 except Exception as e:
                     raise e
-                    logging.error("Could not import routines from %s", full_path)
+                    self.logger.error("Could not import routines from %s", full_path)
                 
                 
-        logging.info(f"Found {len(routines)} routines in path {path}")
+        self.logger.info(f"Found {len(routines)} routines in path {path}")
         return routines

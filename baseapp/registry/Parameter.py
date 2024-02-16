@@ -4,6 +4,7 @@ T = TypeVar("T")
 
 class Parameter(Generic[T]):
     def __init__(self, name = None, description: str = None, default = None):
+        self.name = name
         self.default = default
         self.value: T = default
         self.description = description
@@ -46,8 +47,12 @@ class Parameter(Generic[T]):
             return super().__getattribute__(name)
         else:
             return super().__getattribute__(name)
-        
-    def cast(self, value):
+    
+    @property
+    def type(self):
+        return get_args(self.__orig_class__)[0]
+    
+    def cast(self, value: T):
         baseClass = get_args(self.__orig_class__)[0]
         if isinstance(value, baseClass):
             return value

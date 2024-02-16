@@ -15,6 +15,7 @@ class MockRoutine(BaseRoutine):
     def run(self):
         self.result = self.a + self.b
         print("Result is", self.result)
+        print("DEBUG MODE", self.DEBUG_MODE)
         
 @pytest.fixture
 def mockRoutineProvider():

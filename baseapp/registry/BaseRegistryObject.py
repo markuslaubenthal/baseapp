@@ -8,6 +8,9 @@ class BaseRegistryObject(object):
     Base class for all registry objects.
     """
     name = "BaseRegistryObject"
+    logger = logging.getLogger(__name__)
+    timeout = 5
+    _path = None
     
     DEBUG_MODE = False
     
@@ -18,6 +21,7 @@ class BaseRegistryObject(object):
         self.name = name
         self.description = description
         self.id = id
+        self.logger = logging.getLogger(self.__class__.__module__ + "." + self.__class__.__name__)
         
         classMembers = dir(self.__class__)
         for member in classMembers:
@@ -25,7 +29,7 @@ class BaseRegistryObject(object):
                 logging.debug("Initializing parameter: %s", member)
                 parameter = super().__getattribute__(member)
                 super().__setattr__(member, copy(parameter))
-                super().__getattribute__(member)
+                # super().__getattribute__(member).init()
         
 
     def __str__(self):
@@ -62,7 +66,7 @@ class BaseRegistryObject(object):
         """
         Comparison operator.
         """
-        return cmp(self.id, other.id)
+        return self.id == other.id
 
     def __lt__(self, other):
         """
@@ -138,6 +142,9 @@ class BaseRegistryObject(object):
         logging.debug("Setting parameter: %s = %s", name, value)
         setattr(self, name, value)
     
+    def setLogger(self, logger):
+        self.logger = logger
+    
     @classmethod
     def getParameters(cls):
         """
@@ -148,6 +155,17 @@ class BaseRegistryObject(object):
         for member in classMembers:
             if issubclass(type(getattr(cls, member)), Parameter):
                 parameters.append((member, getattr(cls, member)))
+        return parameters
+    
+    def getParameterValues(self):
+        """
+        Get parameter values.
+        """
+        classMembers = dir(self.__class__)
+        parameters = {}
+        for member in classMembers:
+            if issubclass(type(getattr(self.__class__, member)), Parameter):
+                parameters[member] = getattr(self, member)
         return parameters
     
     def __setattr__(self, name, value):
@@ -172,6 +190,10 @@ class BaseRegistryObject(object):
             return attribute.value
         else:
             return attribute
+    
+    @classmethod
+    def _setPath(cls, path):
+        cls._path = path
         
         
 TypeRegistryObject = TypeVar('TypeRegistryObject', bound=BaseRegistryObject)

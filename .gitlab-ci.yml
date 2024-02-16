@@ -29,6 +29,6 @@ building:
     - export VERSION=$(echo $CI_COMMIT_REF_NAME | sed 's/release-//')
     - poetry version $VERSION
     - poetry build
-    - poetry publish --repository gitlab -u ${GITLAB_CI_USER} -p ${GITLAB_CI_TOKEN}
+    - poetry publish --repository gitlab -u gitlab-ci-token -p ${CI_JOB_TOKEN}
   only:
     - /^release-.*$/
