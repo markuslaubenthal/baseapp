@@ -1,7 +1,7 @@
 from .registry import Discovery, Registry
 from .registry.routines import BaseRoutine
 from .registry.services import BaseService
-from .cli import AppCLIBuilder, RoutinesCLIBuilder, ServicesCLIBuilder
+from .cli import AppCLIBuilder, RoutinesCLIBuilder, ServicesCLIBuilder, LogsCLIBuilder
 import click
 import dotenv
 import sys, os
@@ -32,6 +32,7 @@ class BaseApp:
         self.routineRegistry = Registry[BaseRoutine]()
         self.serviceRegistry = Registry[BaseService]()
         self.configFile = configFile
+        self.logFiles = []
         
         self.config = self.loadDefaultConfig()
         self.cli = None
@@ -53,6 +54,9 @@ class BaseApp:
         
         
     
+    def getLogFiles(self):
+        return self.logFiles
+    
     def setupExitHandler(self):
         def exitHandler():
             self.stop()
@@ -73,6 +77,9 @@ class BaseApp:
         baseLogFilename = os.path.join(logDestination, "BaseApp.log")
         serviceLogFilename = os.path.join(logDestination, "services.log")
         routineLogFilename = os.path.join(logDestination, "routines.log")
+        self.logFiles.append(baseLogFilename)
+        self.logFiles.append(serviceLogFilename)
+        self.logFiles.append(routineLogFilename)
         os.makedirs(logDestination, exist_ok=True)
         
         formatter = logging.Formatter('%(asctime)s [%(levelname)s] [%(name)s] %(message)s')
@@ -116,6 +123,7 @@ class BaseApp:
         
         RoutinesCLIBuilder(self.routineRegistry).build(group=self.cli)
         ServicesCLIBuilder(self.serviceRegistry).build(group=self.cli)
+        LogsCLIBuilder(self).build(group=self.cli)
         
     
     def setDebug(self, debug):
