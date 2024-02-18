@@ -1,3 +1,5 @@
+import multiprocessing
+multiprocessing.set_start_method('fork')
 from .registry import Discovery, Registry
 from .registry.routines import BaseRoutine
 from .registry.services import BaseService
@@ -8,7 +10,7 @@ import sys, os
 
 import logging
 from logging import FileHandler
-import multiprocessing
+
 import atexit
 
 
@@ -46,7 +48,6 @@ class BaseApp:
         dotenv.load_dotenv(".env")
         self.setupLogger()
         self.setupExitHandler()
-        multiprocessing.set_start_method('fork')
         
         
         # TEMPORARY
