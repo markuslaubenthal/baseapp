@@ -2,6 +2,7 @@ import click
 from ..registry import Registry
 from ..registry.services import BaseService, ServiceExecutor
 import re
+from .LazyGroup import LazyGroup
 
 pattern = re.compile(r'(?<!^)(?=[A-Z])')
 def camel_to_snake(name):
@@ -44,3 +45,35 @@ class ServicesCLIBuilder:
                 return cmd
             
             service_run.add_command(cmd_wrapper(service), name_camel_case)
+            
+    def buildLazy(self, group: "click.group"):
+        @group.group(name="services")
+        def services():
+            pass
+        
+        @services.group(
+            name="run",
+            cls=LazyGroup,
+            registry=self.registry,
+            cliBuilder=self
+        )
+        def services_run():
+            pass
+        
+    def buildCommand(self, cmdName, service: BaseService):
+        def cmd(**kwargs):
+            executor = ServiceExecutor(service)
+            # pickle.dumps(executor.service)
+            executor.setArguments(**kwargs)
+            self.registry.registerExecutor(executor)
+            executor.start()
+            executor.join()
+        cmd = click.command(name=cmdName)(cmd)
+        
+        for name, param in service.getParameters():
+            cmd = click.option(
+                f'--{name}',
+                default=param.default,
+                envvar=param.environment_variable_name
+            )(cmd)
+        return cmd

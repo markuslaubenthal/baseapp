@@ -4,7 +4,7 @@ from .BaseRegistryObject import BaseRegistryObject, TypeRegistryObject
 import logging
 
 class Registry(Generic[TypeRegistryObject]):
-    logger = logging.getLogger("BaseApp")
+    logger = logging.getLogger(__name__)
     
     def __init__(self):
         self.elements = {}

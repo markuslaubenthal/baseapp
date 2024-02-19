@@ -21,12 +21,12 @@ class BaseRegistryObject(object):
         self.name = name
         self.description = description
         self.id = id
-        self.logger = logging.getLogger(self.__class__.__module__ + "." + self.__class__.__name__)
-        
+        self.logger = logging.getLogger(
+            self.__class__.__module__ + "." + self.__class__.__name__ + "." + self.id)
         classMembers = dir(self.__class__)
         for member in classMembers:
             if issubclass(type(getattr(self.__class__, member)), Parameter):
-                logging.debug("Initializing parameter: %s", member)
+                self.logger.debug("Copying parameter: %s", member)
                 parameter = super().__getattribute__(member)
                 super().__setattr__(member, copy(parameter))
                 # super().__getattribute__(member).init()
@@ -132,14 +132,14 @@ class BaseRegistryObject(object):
         classMembers = dir(self.__class__)
         for member in classMembers:
             if issubclass(type(getattr(self.__class__, member)), Parameter):
-                logging.debug("Initializing parameter: %s", member)
+                self.logger.debug("Initializing parameter value: %s", member)
                 super().__getattribute__(member).init()
     
     def setParameter(self, name, value):
         """
         Set parameter value.
         """
-        logging.debug("Setting parameter: %s = %s", name, value)
+        self.logger.debug("Setting parameter: %s = %s", name, value)
         setattr(self, name, value)
     
     def setLogger(self, logger):

@@ -3,7 +3,7 @@ multiprocessing.set_start_method('fork')
 from .registry import Discovery, Registry
 from .registry.routines import BaseRoutine
 from .registry.services import BaseService
-from .cli import AppCLIBuilder, RoutinesCLIBuilder, ServicesCLIBuilder, LogsCLIBuilder
+from .cli import AppCLIBuilder, RoutinesCLIBuilder, ServicesCLIBuilder, LogsCLIBuilder, LazyGroup
 import click
 import dotenv
 import sys, os
@@ -14,12 +14,6 @@ from logging import FileHandler
 import atexit
 
 
-
-# Lazy Import Setup
-import builtins
-original_import = builtins.__import__
-
-
 import pprint
 class BaseApp:
     def __init__(
@@ -28,35 +22,41 @@ class BaseApp:
             enableRoutineDiscovery = True,
             enableServiceDiscovery = True):
         
+        dotenv.load_dotenv(".env")
+        
+        # Logging stuff
+        self.config = self.loadDefaultConfig()
+        self.logFormat = self.config["log_format"]
+        logging.basicConfig(
+            format=self.logFormat,
+            level=logging.getLevelName(self.config["log_level"])
+        )
+        
         self.pp = pprint.PrettyPrinter(indent=4)
         self.enableRoutineDiscovery = enableRoutineDiscovery
         self.enableServiceDiscovery = enableServiceDiscovery
         self.routineRegistry = Registry[BaseRoutine]()
         self.serviceRegistry = Registry[BaseService]()
         self.configFile = configFile
-        self.logFiles = []
         
-        self.config = self.loadDefaultConfig()
         self.cli = None
         self.debug = False
         
         self.isStopped = False
         
-        logging.basicConfig(format='%(asctime)s [%(levelname)s] [%(name)s] %(message)s', level=logging.ERROR)
+        
+        
         self.logger = logging.getLogger(__name__)
         
-        dotenv.load_dotenv(".env")
         self.setupLogger()
         self.setupExitHandler()
         
         
-        # TEMPORARY
-        # builtins.__import__ = self.custom_import
-        
-        
     
     def getLogFiles(self):
-        return self.logFiles
+        log_files = os.listdir(self.config["log_destination"])
+        return log_files
+        # return self.logFiles
     
     def setupExitHandler(self):
         def exitHandler():
@@ -68,7 +68,9 @@ class BaseApp:
         return {
             "routines_directories": ["routines"],
             "services_directories": ["services"],
-            "log_destination": "logs/"
+            "log_destination": "logs/",
+            "log_level": "ERROR",
+            "log_format": '%(asctime)s [%(levelname)s] [%(name)s] %(message)s'
         }
         
     def setupLogger(self):
@@ -78,12 +80,9 @@ class BaseApp:
         baseLogFilename = os.path.join(logDestination, "BaseApp.log")
         serviceLogFilename = os.path.join(logDestination, "services.log")
         routineLogFilename = os.path.join(logDestination, "routines.log")
-        self.logFiles.append(baseLogFilename)
-        self.logFiles.append(serviceLogFilename)
-        self.logFiles.append(routineLogFilename)
         os.makedirs(logDestination, exist_ok=True)
         
-        formatter = logging.Formatter('%(asctime)s [%(levelname)s] [%(name)s] %(message)s')
+        formatter = logging.Formatter(self.logFormat)
         baseLogHandler = logging.FileHandler(baseLogFilename, mode='a', encoding=None, delay=False, errors=None)
         baseLogHandler.setFormatter(formatter)
         baseLogger.addHandler(baseLogHandler)
@@ -109,9 +108,11 @@ class BaseApp:
             self.serviceRegistry.register(service)
     
     def setLogLevel(self, level):
-        logging.basicConfig(stream=sys.stdout, level=level)
+        self.log_level = level
+        root_logger = logging.getLogger()
+        root_logger.setLevel(level)
     
-    def init(self):
+    def discoverAll(self):
         if self.enableRoutineDiscovery:
             for directory in self.config["routines_directories"]:
                 self._discoverRoutines(directory)
@@ -119,24 +120,25 @@ class BaseApp:
         if self.enableServiceDiscovery:
             for directory in self.config["services_directories"]:
                 self._discoverServices(directory)
-                
-        self.cli = AppCLIBuilder(self).build()
         
-        RoutinesCLIBuilder(self.routineRegistry).build(group=self.cli)
-        ServicesCLIBuilder(self.serviceRegistry).build(group=self.cli)
-        LogsCLIBuilder(self).build(group=self.cli)
+    def initCLI(self):
+        self.logger.debug("Building CLI")
+        self.cli = AppCLIBuilder(self).build()
+        cli = self.cli
+        RoutinesCLIBuilder(self.routineRegistry).buildLazy(group=self.cli)
+        ServicesCLIBuilder(self.serviceRegistry).buildLazy(group=self.cli)
+        LogsCLIBuilder(self).build(group=cli)
         
     
     def setDebug(self, debug):
         self.debug = debug
         BaseRoutine.DEBUG_MODE = debug
         BaseService.DEBUG_MODE = debug
-        baseLogger = logging.getLogger("baseapp")
         if debug:
-            baseLogger.setLevel(logging.DEBUG)        
+            self.setLogLevel(logging.DEBUG)
     
     def start(self, *args, **kwargs):
-        self.init()
+        self.initCLI(*args, **kwargs)
         self.run(*args, **kwargs)
         self.stop()
     
@@ -165,7 +167,7 @@ class BaseApp:
     
     def run(self, *args, **kwargs):
         try:
-            self.cli(standalone_mode=False, *args, **kwargs)
+            self.cli(standalone_mode=False)#, *args, **kwargs)
         except click.exceptions.Abort:
             self.logger.critical("KeyboardInterrupt")
         except click.exceptions.ClickException as e:

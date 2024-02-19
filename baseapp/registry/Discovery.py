@@ -9,7 +9,11 @@ BaseClass = TypeVar("BaseClass")
 
 class Discovery(Generic[BaseClass]):
     """Discovers Routines in the routine folder of the app."""
-    logger = logging.getLogger("BaseApp")
+    logger = logging.getLogger(__name__)
+    
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+    
     def discover(self, base_path) -> List[BaseClass]:
         """
         Discover routines and import them. A routine is a directory or file in the routines folder.
@@ -71,6 +75,7 @@ class Discovery(Generic[BaseClass]):
         routines = []
         for name, obj in inspect.getmembers(module):
             if inspect.isclass(obj) and issubclass(obj, baseClass) and obj is not baseClass:
+                self.logger.info(f"Found routine {name}, {obj}")
                 routines.append(obj)
         return routines
     
@@ -79,6 +84,7 @@ class Discovery(Generic[BaseClass]):
         Finds all routines in the given path.
         """
         
+        self.logger.info("Finding routines in path %s", path)
         routines = []
         for file in os.listdir(path):
             full_path = os.path.join(path, file)

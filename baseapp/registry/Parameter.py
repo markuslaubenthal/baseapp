@@ -3,7 +3,7 @@ import os
 T = TypeVar("T")
 
 class Parameter(Generic[T]):
-    def __init__(self, name = None, description: str = None, default = None):
+    def __init__(self, name = None, description: str = None, default = None, required = False):
         self.name = name
         self.default = default
         self.value: T = default
@@ -11,6 +11,7 @@ class Parameter(Generic[T]):
         
         self.from_env = False
         self.environment_variable_name = None
+        self._required = required
         
         self.override = False
         self.override_value: T = None
@@ -51,6 +52,10 @@ class Parameter(Generic[T]):
     @property
     def type(self):
         return get_args(self.__orig_class__)[0]
+    
+    @property
+    def required(self):
+        return self._required
     
     def cast(self, value: T):
         baseClass = get_args(self.__orig_class__)[0]

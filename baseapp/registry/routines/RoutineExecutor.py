@@ -1,6 +1,8 @@
 from ..Executor import Executor
 from .BaseRoutine import BaseRoutine
 import logging
+import time
+import random
 
 class RoutineExecutor(Executor):
     
@@ -10,7 +12,8 @@ class RoutineExecutor(Executor):
     
     def run(self, *args, **kwargs):
         super().run()
-        routineInstance = self.routine()
+        instance_id = str(int(time.time())) + "-" + str(random.randint(0, 9999)).rjust(4, "0")
+        routineInstance = self.routine(instance_id)
         for name, param in kwargs.items():
             routineInstance.setParameter(name, param)
         
