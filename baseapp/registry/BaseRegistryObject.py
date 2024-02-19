@@ -22,7 +22,7 @@ class BaseRegistryObject(object):
         self.description = description
         self.id = id
         self.logger = logging.getLogger(
-            self.__class__.__module__ + "." + self.__class__.__name__ + "." + self.id)
+            self.__class__.__module__ + "." + self.__class__.__name__ + "." + str(self.id))
         classMembers = dir(self.__class__)
         for member in classMembers:
             if issubclass(type(getattr(self.__class__, member)), Parameter):

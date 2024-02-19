@@ -18,6 +18,6 @@ def childApp():
     app.config["routines_directories"] = ["tests/routines/fixtures"]
     app.config["services_directories"] = ["tests/services/fixtures"]
     
-    app.init()
+    app.discoverAll()
     return app
     

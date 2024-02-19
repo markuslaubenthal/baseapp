@@ -17,7 +17,7 @@ class TestBaseApp:
     
     @mock.patch.dict(os.environ, {"INT_A": "1", "INT_B": "2"})
     def test_cli(self, app):
-        app.init()
+        app.initCLI()
         assert app.cli is not None
         assert app.cli.name == "cli"
         
