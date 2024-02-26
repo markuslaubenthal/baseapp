@@ -54,7 +54,7 @@ class BaseApp:
         
     
     def getLogFiles(self):
-        log_files = os.listdir(self.config["log_destination"])
+        log_files = [os.path.join(self.config["log_destination"], file) for file in log_files]
         return log_files
         # return self.logFiles
     
