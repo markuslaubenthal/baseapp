@@ -20,11 +20,7 @@ class LogsCLIBuilder:
         @logs_group.command(name="prune")
         def logs_prune(**kwargs):
             # prune logs
-            import os
-            for log_file in self.app.getLogFiles():
-                # remove log file if exists
-                if os.path.exists(log_file):
-                    os.remove(log_file)
+            self.app.pruneLogFiles()
                     
         # logs_prune.add_command(cmd_wrapper(routine), name_camel_case)
         

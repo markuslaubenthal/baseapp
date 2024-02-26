@@ -20,12 +20,16 @@ class BaseApp:
             self,
             configFile = "config/conf.yaml",
             enableRoutineDiscovery = True,
-            enableServiceDiscovery = True):
+            enableServiceDiscovery = True,
+            logDestination = None):
         
         dotenv.load_dotenv(".env")
         
         # Logging stuff
         self.config = self.loadDefaultConfig()
+        if logDestination is not None:
+            self.config["log_destination"] = logDestination
+            
         self.logFormat = self.config["log_format"]
         logging.basicConfig(
             format=self.logFormat,
@@ -50,10 +54,15 @@ class BaseApp:
         
         self.setupLogger()
         self.setupExitHandler()
-        
-        
+    
+    # TODO: Remove this function and put it somewhere else
+    def pruneLogFiles(self):
+        log_files = self.getLogFiles()
+        for file in log_files:
+            os.remove(file)
     
     def getLogFiles(self):
+        log_files = os.listdir(self.config["log_destination"])
         log_files = [os.path.join(self.config["log_destination"], file) for file in log_files]
         return log_files
         # return self.logFiles
@@ -68,7 +77,7 @@ class BaseApp:
         return {
             "routines_directories": ["routines"],
             "services_directories": ["services"],
-            "log_destination": "logs/",
+            "log_destination": os.environ.get("LOG_DESTINATION") or "logs/",
             "log_level": "ERROR",
             "log_format": '%(asctime)s [%(levelname)s] [%(name)s] %(message)s'
         }

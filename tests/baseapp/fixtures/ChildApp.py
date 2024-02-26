@@ -12,12 +12,12 @@ class ChildApp(BaseApp):
 def childApp():
     app = ChildApp(
         enableRoutineDiscovery=True,
-        enableServiceDiscovery=True
+        enableServiceDiscovery=True,
+        logDestination="tests/logs/"
     )
     
     app.config["routines_directories"] = ["tests/routines/fixtures"]
     app.config["services_directories"] = ["tests/services/fixtures"]
-    
     app.discoverAll()
     return app
     
