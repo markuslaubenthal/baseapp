@@ -1,3 +1,4 @@
+from multiprocessing import Process
 import click
 from ..registry import Registry
 from ..registry.services import BaseService, ServiceExecutor
@@ -27,12 +28,13 @@ class ServicesCLIBuilder:
             
             def cmd_wrapper(r):
                 def cmd(**kwargs):
-                    import pickle
                     executor = ServiceExecutor(r)
-                    # pickle.dumps(executor.service)
+                    executor.ignore_interrupt = True
+                    
                     executor.setArguments(**kwargs)
                     self.registry.registerExecutor(executor)
-                    executor.start()
+                    executor_process = Process(target=executor.run)
+                    executor_process.start()
                     executor.join()
                 cmd = click.command(name=name_camel_case)(cmd)
                 

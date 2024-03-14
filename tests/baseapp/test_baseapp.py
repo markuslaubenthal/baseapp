@@ -23,7 +23,6 @@ class TestBaseApp:
         
         runner = CliRunner()
         result = runner.invoke(app.cli, ['--debug', 'routines', 'run', 'mock_routine'], standalone_mode=False)
-        
         assert result.exit_code == 0
         assert 'Result is 3' in result.output
         assert 'DEBUG MODE True' in result.output

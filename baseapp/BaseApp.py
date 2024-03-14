@@ -152,12 +152,14 @@ class BaseApp:
         self.stop()
     
     def waitForAll(self):
-        for routine in self.routineRegistry.executors:
+        for routine, process in self.routineRegistry.executors:
+            if process is not None:
             # if the routine has not started, it will not join
-            if routine.is_alive():
-                routine.join()
-        for service in self.serviceRegistry.executors:
-            service.join()
+                if process.is_alive():
+                    process.join()
+        for service, process in self.serviceRegistry.executors:
+            if process.is_alive():
+                service.join()
     
     def stop(self):
         if self.isStopped:

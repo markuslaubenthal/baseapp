@@ -1,11 +1,12 @@
 from ..BaseRegistryObject import BaseRegistryObject
 import logging
+from ..ExecutorState import ExecutorState
 
 class BaseService(BaseRegistryObject):
     
     logger = logging.getLogger(__name__)
     
-    def __init__(self):
+    def __init__(self):       
         super().__init__(self.name, self.__doc__)
         self.executor = None
         self.stopEvent = None
@@ -17,10 +18,12 @@ class BaseService(BaseRegistryObject):
         self.stopEvent = stopEvent
         
     def __onstart__(self):
-        self.executor.updateState("started")
+        pass
+        # self.executor.updateState(ExecutorState.STARTING)
         
     def __onstop__(self):
-        self.executor.updateState("stopped")
+        pass
+        # self.executor.updateState(ExecutorState.FINISHED)
         
     def __start__(self):
         self.logger.info("Starting service: %s", self.name)
@@ -31,7 +34,7 @@ class BaseService(BaseRegistryObject):
         
     def __stop__(self):
         self.logger.info("Stopping service: %s", self.name)
-        self.stopEvent.set()
+        # self.stopEvent.set()
     
     
     def stop(self):
