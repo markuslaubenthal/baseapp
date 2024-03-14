@@ -46,3 +46,10 @@ class TestServiceExecutor:
         assert executor_process.is_alive() == False
         executor_process.join()
         assert executor.getCurrentState() == ExecutorState.TERMINATED
+        
+    @pytest.mark.skip(reason="This test is not yet implemented")
+    def test_executor_ignores_interrupt(self):
+        service = MockService
+        executor = ServiceExecutor(service)
+        executor.ignore_interrupt = True
+        assert False
