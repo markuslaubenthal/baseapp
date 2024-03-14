@@ -1,6 +1,6 @@
 from typing import Generic
 from .BaseRegistryObject import BaseRegistryObject, TypeRegistryObject
-
+from .ExecutorState import ExecutorState
 import logging
 
 class Registry(Generic[TypeRegistryObject]):
@@ -33,10 +33,18 @@ class Registry(Generic[TypeRegistryObject]):
         return len(self.elements)
     
     def stopAll(self):
-        for executor in self.executors:
-            self.logger.info(f"Stopping executor {executor}")
-            executor.stop()
-    
+        for executor, process in self.executors:
+            if process is not None:
+                self.logger.debug(f"Stopping executor {executor}")
+                executor.stop()
+        # for executor, process in self.executors:
+        #     if process is not None:
+        #         self.logger.debug(f"Joining executor {executor}")
+        #         process.join(timeout = executor.instance.timeout)
+        #         if process.is_alive():
+        #             executor.updateState(ExecutorState.FAILED)
+        #             process.terminate()
+                
     def registerExecutor(self, executor):
         self.logger.info(f"Adding executor {executor}")
         self.executors.append(executor)

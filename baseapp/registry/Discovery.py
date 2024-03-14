@@ -86,6 +86,9 @@ class Discovery(Generic[BaseClass]):
         
         self.logger.info("Finding routines in path %s", path)
         routines = []
+        if not os.path.exists(path):
+            self.logger.warning("Path %s does not exist", path)
+            return []
         for file in os.listdir(path):
             full_path = os.path.join(path, file)
             
