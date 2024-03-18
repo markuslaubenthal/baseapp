@@ -159,7 +159,7 @@ class BaseApp:
                     process.join()
         for service, process in self.serviceRegistry.executors:
             if process.is_alive():
-                service.join()
+                process.join()
     
     def stop(self):
         if self.isStopped:
