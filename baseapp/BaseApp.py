@@ -158,8 +158,9 @@ class BaseApp:
                 if process.is_alive():
                     process.join()
         for service, process in self.serviceRegistry.executors:
-            if process.is_alive():
-                process.join()
+            if process is not None:
+                if process.is_alive():
+                    process.join()
     
     def stop(self):
         if self.isStopped:

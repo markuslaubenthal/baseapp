@@ -65,6 +65,7 @@ class ServicesCLIBuilder:
     def buildCommand(self, cmdName, service: BaseService):
         def cmd(**kwargs):
             executor = ServiceExecutor(service)
+            executor.setIgnoreInterrupt(True)
             # pickle.dumps(executor.service)
             executor.setArguments(**kwargs)
             executor_process = Process(target=executor.run)

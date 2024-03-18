@@ -15,7 +15,10 @@ class Executor:
 
     def updateState(self, state: ExecutorState):
         self.state.value = state.value
-        
+    
+    def setIgnoreInterrupt(self, ignore: bool):
+        self.ignore_interrupt = ignore
+    
     def getCurrentState(self):
         return ExecutorState(self.state.value)
     
