@@ -12,7 +12,6 @@ class MockService(BaseService):
     result = Parameter[int]("result", default = None)
     
     def run(self):
-        print("NEVER EXECUTED")
         self.logger.critical("MockService is running")
         
         for i in range(3):

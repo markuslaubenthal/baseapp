@@ -69,7 +69,6 @@ class ServiceExecutor(Executor):
             
         self.logger.debug("Waiting for thread to join")
         self.thread.join(self.instance.timeout)
-        print("Thread joined")
         
         if self.thread.is_alive():
             # Terminate thread if it is still alive
