@@ -38,7 +38,7 @@ class BaseService(BaseRegistryObject):
     
     
     def stop(self):
-        raise NotImplemented("stop method not implemented")
+        raise NotImplementedError("stop method not implemented")
     
     def run(self):
-        raise NotImplemented("run method not implemented")
+        raise NotImplementedError("run method not implemented")

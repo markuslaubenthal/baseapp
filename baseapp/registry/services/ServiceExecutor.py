@@ -50,9 +50,8 @@ class ServiceExecutor(Executor):
                 self.logger.debug("Stop event set")
                 try:
                     # Try soft shutdown if stop method is implemented
-                    x = 0
-                    # self.instance.stop()
-                except NotImplemented:
+                    self.instance.stop()
+                except NotImplementedError:
                     self.logger.debug("Stop method not implemented")
                     
                 shouldRun = False
