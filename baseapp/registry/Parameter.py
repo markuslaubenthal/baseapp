@@ -59,6 +59,10 @@ class Parameter(Generic[T]):
     
     def cast(self, value: T):
         baseClass = get_args(self.__orig_class__)[0]
+        
+        if value is None:
+            return value
+        
         if isinstance(value, baseClass):
             return value
         else:
