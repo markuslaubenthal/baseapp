@@ -1,5 +1,10 @@
 import multiprocessing
-multiprocessing.set_start_method('fork')
+try:
+    # TODO: Give a warning.
+    # TODO: Change the routines and services such that they work with fork and spawn
+    multiprocessing.set_start_method('fork')
+except:
+    pass
 from .registry import Discovery, Registry
 from .registry.routines import BaseRoutine
 from .registry.services import BaseService
