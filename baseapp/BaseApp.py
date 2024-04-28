@@ -26,11 +26,13 @@ class BaseApp:
             configFile = "config/conf.yaml",
             enableRoutineDiscovery = True,
             enableServiceDiscovery = True,
-            logDestination = None):
+            logDestination = None,
+            disableLogFiles = False):
         
         dotenv.load_dotenv(".env")
         
         # Logging stuff
+        self.disableLogFiles = disableLogFiles
         self.config = self.loadDefaultConfig()
         if logDestination is not None:
             self.config["log_destination"] = logDestination
@@ -57,7 +59,8 @@ class BaseApp:
         
         self.logger = logging.getLogger(__name__)
         
-        self.setupLogger()
+        if not self.disableLogFiles:
+            self.setupLogger()
         self.setupExitHandler()
     
     # TODO: Remove this function and put it somewhere else
