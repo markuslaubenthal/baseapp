@@ -105,12 +105,12 @@ class BaseApp:
         baseLogger.addHandler(baseLogHandler)
         
         serviceLogger = logging.getLogger("baseapp.registry.services")
-        serviceLogHandler = logging.FileHandler(serviceLogFilename, mode='a', encoding=None, delay=False, errors=None)
+        serviceLogHandler = logging.FileHandler(serviceLogFilename, mode='a', encoding=None, delay=False)
         serviceLogHandler.setFormatter(formatter)
         serviceLogger.addHandler(serviceLogHandler)
         
         routineLogger = logging.getLogger("baseapp.registry.routines")
-        routineLogHandler = logging.FileHandler(routineLogFilename, mode='a', encoding=None, delay=False, errors=None)
+        routineLogHandler = logging.FileHandler(routineLogFilename, mode='a', encoding=None, delay=False)
         routineLogHandler.setFormatter(formatter)
         routineLogger.addHandler(routineLogHandler)
     
