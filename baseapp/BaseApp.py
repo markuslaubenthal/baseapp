@@ -100,7 +100,7 @@ class BaseApp:
         os.makedirs(logDestination, exist_ok=True)
         
         formatter = logging.Formatter(self.logFormat)
-        baseLogHandler = logging.FileHandler(baseLogFilename, mode='a', encoding=None, delay=False, errors=None)
+        baseLogHandler = logging.FileHandler(baseLogFilename, mode='a', encoding=None, delay=False)
         baseLogHandler.setFormatter(formatter)
         baseLogger.addHandler(baseLogHandler)
         
