@@ -14,13 +14,13 @@ class Discovery(Generic[BaseClass]):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
     
-    def discover(self, base_path) -> List[BaseClass]:
+    def discover(self, base_path, recursive=False) -> List[BaseClass]:
         """
         Discover routines and import them. A routine is a directory or file in the routines folder.
         If a directory is found, it is assumed that it has a __init__.py file that imports the extended BaseClass class.
         If a file is found, it is assumed to be a routine and is imported.
         """
-        routines: List[BaseClass] = self.find_routines(base_path)
+        routines: List[BaseClass] = self.find_routines(base_path, recursive=recursive)
         return routines
     
     def import_routine(self, path, className = None) -> BaseClass:

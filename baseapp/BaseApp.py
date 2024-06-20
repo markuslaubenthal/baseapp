@@ -26,11 +26,12 @@ class BaseApp:
             configFile = "config/conf.yaml",
             enableRoutineDiscovery = True,
             enableServiceDiscovery = True,
+            discoverRecursive = False,
             logDestination = None,
             disableLogFiles = False):
         
         dotenv.load_dotenv(".env")
-        
+        self.discoverRecursive = discoverRecursive
         # Logging stuff
         self.disableLogFiles = disableLogFiles
         self.config = self.loadDefaultConfig()
@@ -114,13 +115,13 @@ class BaseApp:
         routineLogHandler.setFormatter(formatter)
         routineLogger.addHandler(routineLogHandler)
     
-    def _discoverRoutines(self, directory):
-        routines = Discovery[BaseRoutine]().discover(directory)
+    def _discoverRoutines(self, directory, recursive=False):
+        routines = Discovery[BaseRoutine]().discover(directory, recursive=recursive)
         for routine in routines:
             self.routineRegistry.register(routine)
             
-    def _discoverServices(self, directory):
-        services = Discovery[BaseService]().discover(directory)
+    def _discoverServices(self, directory, recursive=False):
+        services = Discovery[BaseService]().discover(directory, recursive=recursive)
         for service in services:
             self.serviceRegistry.register(service)
     
@@ -132,11 +133,11 @@ class BaseApp:
     def discoverAll(self):
         if self.enableRoutineDiscovery:
             for directory in self.config["routines_directories"]:
-                self._discoverRoutines(directory)
+                self._discoverRoutines(directory, recursive=self.discoverRecursive)
             
         if self.enableServiceDiscovery:
             for directory in self.config["services_directories"]:
-                self._discoverServices(directory)
+                self._discoverServices(directory, recursive=self.discoverRecursive)
         
     def initCLI(self):
         self.logger.debug("Building CLI")

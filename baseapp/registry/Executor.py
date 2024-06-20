@@ -36,9 +36,13 @@ class Executor:
         # to exit with a keyboard interrupt
         if self.ignore_interrupt:
             signal.signal(signal.SIGINT, signal.SIG_IGN)
+            
+        # TODO: Maybe for every executor have its own signal handler, such that it is not dependent
+        # on the main App Process to send the stop signal to the executor.
     
     def stop(self):
         self.stopEvent.set()
+        signal.signal(signal.SIGINT, signal.SIG_DFL)
         
         
 # class Executor:
