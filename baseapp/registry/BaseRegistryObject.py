@@ -11,6 +11,7 @@ class BaseRegistryObject(object):
     logger = logging.getLogger(__name__)
     timeout = 5
     _path = None
+    kwargs = dict()
     
     DEBUG_MODE = False
     
@@ -140,7 +141,15 @@ class BaseRegistryObject(object):
         Set parameter value.
         """
         self.logger.debug("Setting parameter: %s = %s", name, value)
-        setattr(self, name, value)
+        try:
+            attribute = super().__getattribute__(name)
+            if issubclass(type(attribute), Parameter):
+                attribute.setValue(value)
+                return
+        except AttributeError:
+            pass
+        self.kwargs[name] = value
+            
     
     def setLogger(self, logger):
         self.logger = logger
@@ -174,13 +183,13 @@ class BaseRegistryObject(object):
         """
         try:
             attribute = super().__getattribute__(name)
+            if issubclass(type(attribute), Parameter):
+                attribute.setValue(value)
+                return
         except AttributeError:
-            attribute = None
-        if issubclass(type(attribute), Parameter):
-            attribute.setValue(value)
-        else:
-            super().__setattr__(name, value)
-    
+            pass
+        super().__setattr__(name, value)
+            
     def __getattribute__(self, name):
         """
         Get attribute.

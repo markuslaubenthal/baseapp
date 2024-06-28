@@ -1,12 +1,13 @@
 from ..Executor import Executor
 from .BaseRoutine import BaseRoutine
 import logging
+from typing import Type
 import time
 import random
 
 class RoutineExecutor(Executor):
     
-    def __init__(self, routine: BaseRoutine.__class__):
+    def __init__(self, routine: Type[BaseRoutine]):
         super().__init__()
         self.routine = routine
     

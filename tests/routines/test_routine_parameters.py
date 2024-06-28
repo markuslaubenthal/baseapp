@@ -1,7 +1,8 @@
 import pytest
 import os
-from .fixtures.MockRoutine import mockRoutineProvider, MockRoutine
 from unittest import mock
+from .fixtures.MockRoutine import mockRoutineProvider, MockRoutine
+from baseapp.registry import Parameter
 
 class TestRoutineParameters:
     
@@ -28,6 +29,11 @@ class TestRoutineParameters:
         
         assert mockRoutine.a == 5
         assert mockRoutine.b == 6
+        
+        assert type(mockRoutine.a) == int
+        assert type(mockRoutine.b) == int
+        assert type(object.__getattribute__(mockRoutine, "a")) == Parameter
+        assert type(object.__getattribute__(mockRoutine, "b")) == Parameter
         
     @mock.patch.dict(os.environ, {"INT_A": "1", "INT_B": "2"})
     def test_overriden_parameter_value_is_not_reset(self, mockRoutineProvider):
@@ -65,3 +71,16 @@ class TestRoutineParameters:
         a = Parameter[int]("a", "This is a parameter", default = 1).env("INT_A")
         a.init()
         assert a.value == 8
+        
+    @mock.patch.dict(os.environ, {"INT_A": "1", "INT_B": "2"})
+    def test_extra_kwargs(self, mockRoutineProvider):
+        mockRoutine = mockRoutineProvider()
+        mockRoutine.setParameter("non_existent", 3)
+        with pytest.raises(AttributeError):
+            mockRoutine.non_existent
+        assert mockRoutine.kwargs["non_existent"] == 3
+        
+        mockRoutine.another_one = 4
+        assert mockRoutine.another_one == 4
+        with pytest.raises(KeyError):
+            mockRoutine.kwargs["another_one"]

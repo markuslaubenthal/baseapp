@@ -75,14 +75,25 @@ class RoutinesCLIBuilder:
             
     def buildCommand(self, cmdName, routine: BaseRoutine):
         
-        def cmd(**kwargs):
+        @click.pass_context
+        def cmd(ctx, **kwargs):
+            more_kwargs = dict()
+            for item in ctx.args:
+                option, value = item.split('=')
+                option = option.strip("-")
+                more_kwargs.update([(option, value)])
+            kwargs.update(more_kwargs)
+            
             executor = RoutineExecutor(routine)
             # process = Process(target=executor.run, kwargs=kwargs)
             self.registry.registerExecutor((executor, None))
             # process.start()
             # process.join()
             executor.run(**kwargs)
-        cmd = click.command(name=cmdName)(cmd)
+        cmd = click.command(name=cmdName,
+                            context_settings=dict(
+                                ignore_unknown_options=True,
+                                allow_extra_args=True))(cmd)
         
         for name, param in routine.getParameters():
             # if parameter is boolean, make it a flag

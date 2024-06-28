@@ -7,10 +7,11 @@ from multiprocessing import Value, Event
 import ctypes
 from ..ExecutorState import ExecutorState
 import time
+from typing import Type
 
 class ServiceExecutor(Executor):
     
-    def __init__(self, serviceClass: BaseService.__class__):
+    def __init__(self, serviceClass: Type[BaseService]):
         super().__init__()
         self.serviceClass = serviceClass
         self.events = []
