@@ -99,7 +99,7 @@ class RoutinesCLIBuilder:
             # if parameter is boolean, make it a flag
             if param.type == bool:
                 cmd = click.option(
-                    f'--{name}',
+                    f'--{name}', f"{name}",
                     is_flag=True,
                     default=param.default,
                     envvar=param.environment_variable_name,
@@ -107,7 +107,7 @@ class RoutinesCLIBuilder:
                 )(cmd)
             else:
                 cmd = click.option(
-                    f'--{name}',
+                    f'--{name}', f"{name}",
                     default=param.default,
                     envvar=param.environment_variable_name,
                     type=param.type,
