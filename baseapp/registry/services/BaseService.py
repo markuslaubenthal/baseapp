@@ -3,7 +3,7 @@ import logging
 from ..ExecutorState import ExecutorState
 
 class BaseService(BaseRegistryObject):
-    
+    __start_in_main_thread__ = False
     logger = logging.getLogger(__name__)
     
     def __init__(self):       

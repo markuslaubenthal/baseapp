@@ -68,10 +68,15 @@ class ServicesCLIBuilder:
             executor.setIgnoreInterrupt(True)
             # pickle.dumps(executor.service)
             executor.setArguments(**kwargs)
-            executor_process = Process(target=executor.run)
-            self.registry.registerExecutor((executor, executor_process))
-            executor_process.start()
-            executor_process.join()
+            if service.__start_in_main_thread__:
+                self.registry.registerExecutor((executor, None))
+                executor.run()
+            else:
+                executor_process = Process(target=executor.run)
+                self.registry.registerExecutor((executor, executor_process))
+                executor_process.start()
+                executor_process.join()
+                
         cmd = click.command(name=cmdName)(cmd)
         
         for name, param in service.getParameters():

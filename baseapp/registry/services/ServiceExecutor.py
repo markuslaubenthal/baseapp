@@ -36,15 +36,23 @@ class ServiceExecutor(Executor):
         for name, param in self.kwargs.items():
             self.instance.setParameter(name, param)
         
-        self.thread = Thread(target=self.instance.__start__)
-        self.thread.daemon = True
-        self.thread.start()
-        self.updateState(ExecutorState.RUNNING)
+        if self.serviceClass.__start_in_main_thread__:
+            self.updateState(ExecutorState.RUNNING)
+            self.instance.__start__()
+            self.updateState(ExecutorState.FINISHED)
+            return
+        else:
+            self.thread = Thread(target=self.instance.__start__)
+            self.thread.daemon = True
+            self.thread.start()
+            self.updateState(ExecutorState.RUNNING)
         
         
         # Check if thread is alive.
         # TODO: If more complex checks have to be made, this code should
         # be executed in a asynchronous manner
+        
+        # This can also be handled with proper locks, conditions or whatever
         shouldRun = True
         while shouldRun:
             if self.stopEvent.is_set():
