@@ -10,7 +10,8 @@ class AppCLIBuilder:
         if value:
             self.app.setLogLevel(logging.DEBUG)
         self.app.setDebug(value)
-        click.echo("Operating in debug mode" if value else "")
+        if value:
+            click.echo("Operating in debug mode")
     
     def setLogLevel(self, ctx, param, value):
         if value is not None:
