@@ -15,7 +15,13 @@ class AppCLIBuilder:
     
     def setLogLevel(self, ctx, param, logLevel: str | int):
         if isinstance(logLevel, str):
-            level = logging.getLevelNamesMapping()[logLevel.upper()]
+            try:
+                logLevel = logging.getLevelNamesMapping()[logLevel.upper()]
+            except:
+                self.app.logger.warning(f"Invalid log level: {logLevel}")
+                self.app.logger.warning("Valid log levels are: CRITICAL, ERROR, WARNING, INFO, DEBUG")
+                self.app.logger.warning("Log level not changed")
+                return
         if logLevel is not None:
             if self.app.debug:
                 self.app.logger.warning("Log level cannot be set in debug mode")

@@ -30,7 +30,7 @@ class Discovery(Generic[BaseClass]):
         
         baseClass = get_args(self.__orig_class__)[0]
         
-        self.logger.info(f"Importing module {path}")
+        self.logger.debug(f"Importing module {path}")
         module_name = ".".join(path.replace("/", ".").split(".")[0:-1])
         spec = importlib.util.spec_from_file_location(module_name, path)
         module = importlib.util.module_from_spec(spec)
@@ -75,7 +75,7 @@ class Discovery(Generic[BaseClass]):
         routines = []
         for name, obj in inspect.getmembers(module):
             if inspect.isclass(obj) and issubclass(obj, baseClass) and obj is not baseClass:
-                self.logger.info(f"Found routine {name}, {obj}")
+                self.logger.debug(f"Found routine {name}, {obj}")
                 routines.append(obj)
         return routines
     
@@ -84,7 +84,7 @@ class Discovery(Generic[BaseClass]):
         Finds all routines in the given path.
         """
         
-        self.logger.info("Finding routines in path %s", path)
+        self.logger.debug("Finding routines in path %s", path)
         routines = []
         if not os.path.exists(path):
             self.logger.warning("Path %s does not exist", path)
@@ -111,5 +111,5 @@ class Discovery(Generic[BaseClass]):
                     self.logger.error("Could not import routines from %s", full_path)
                 
                 
-        self.logger.info(f"Found {len(routines)} routines in path {path}")
+        self.logger.debug(f"Found {len(routines)} routines in path {path}")
         return routines

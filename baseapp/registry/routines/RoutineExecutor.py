@@ -11,9 +11,10 @@ class RoutineExecutor(Executor):
         super().__init__()
         self.routine = routine
     
+    
     def run(self, *args, **kwargs):
         super().run()
-        instance_id = str(int(time.time())) + "-" + str(random.randint(0, 9999)).rjust(4, "0")
+        instance_id = self.createInstanceId()
         routineInstance = self.routine(instance_id)
         for name, param in kwargs.items():
             routineInstance.setParameter(name, param)

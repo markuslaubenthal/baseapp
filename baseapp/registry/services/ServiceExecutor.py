@@ -29,7 +29,8 @@ class ServiceExecutor(Executor):
         super().run()
         self.updateState(ExecutorState.STARTING)
         
-        self.instance = self.serviceClass()
+        instance_id = self.createInstanceId()
+        self.instance = self.serviceClass(id=instance_id)
         self.instance.setExecutor(self)
         self.instance.setStopEvent(self.stopEvent)
         
@@ -67,14 +68,14 @@ class ServiceExecutor(Executor):
                 self.updateState(ExecutorState.SHUTTING_DOWN)
                 break
             if not self.thread.is_alive():
-                self.logger.info("Thread finished running")
+                self.logger.debug("Thread finished running")
                 shouldRun = False
                 self.updateState(ExecutorState.FINISHED)
                 break
             self.thread.join(1)
             
         self.logger.debug("Stop event set")
-            
+        
         self.logger.debug("Waiting for thread to join")
         self.thread.join(self.instance.timeout)
         

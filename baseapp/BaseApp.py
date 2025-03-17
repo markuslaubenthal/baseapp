@@ -133,7 +133,7 @@ class BaseApp:
         for service in services:
             self.serviceRegistry.register(service)
     
-    def setLogLevel(self, level):
+    def setLogLevel(self, level: str | int):
         self.log_level = level
         root_logger = logging.getLogger()
         root_logger.setLevel(level)
@@ -186,10 +186,9 @@ class BaseApp:
         self.logger.info("Stopping routines and services")
         self.routineRegistry.stopAll()
         self.serviceRegistry.stopAll()
-        self.logger.info("Waiting for all processes to shutdown")
+        self.logger.debug("Waiting for all processes to shutdown")
         self.waitForAll()
-        
-        self.logger.info("Everything shutdown")
+        self.logger.debug("Everything shutdown")
         
         
         

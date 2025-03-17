@@ -3,6 +3,8 @@ import logging
 import signal
 from .ExecutorState import ExecutorState
 import ctypes
+import random
+import time
 
 class Executor:
     def __init__(self):
@@ -13,6 +15,9 @@ class Executor:
         self.ignore_interrupt = False
         self.state = Value(ctypes.c_int8, ExecutorState.IDLE.value)
 
+    def createInstanceId(self):
+        return str(int(time.time())) + "-" + str(random.randint(0, 9999)).rjust(4, "0")
+    
     def updateState(self, state: ExecutorState):
         self.state.value = state.value
     

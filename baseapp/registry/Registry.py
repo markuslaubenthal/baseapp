@@ -12,7 +12,7 @@ class Registry(Generic[TypeRegistryObject]):
     
     def register(self, el: TypeRegistryObject):
         self.elements[el.name] = el
-        self.logger.info(f"Registered object {el.name}")
+        self.logger.debug(f"Registered object {el.name}")
         
     def unregister(self, name):
         try:
@@ -46,5 +46,5 @@ class Registry(Generic[TypeRegistryObject]):
         #             process.terminate()
                 
     def registerExecutor(self, executor):
-        self.logger.info(f"Adding executor {executor}")
+        self.logger.debug(f"Adding executor {executor}")
         self.executors.append(executor)
