@@ -6,7 +6,7 @@ class BaseService(BaseRegistryObject):
     __start_in_main_thread__ = False
     logger = logging.getLogger(__name__)
     
-    def __init__(self):       
+    def __init__(self):
         super().__init__(self.name, self.__doc__)
         self.executor = None
         self.stopEvent = None

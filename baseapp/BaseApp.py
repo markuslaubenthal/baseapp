@@ -23,12 +23,14 @@ import pprint
 class BaseApp:
     def __init__(
             self,
+            applicationName = "BaseApp",
             configFile = "config/conf.yaml",
             enableRoutineDiscovery = True,
             enableServiceDiscovery = True,
             discoverRecursive = False,
             logDestination = None,
-            disableLogFiles = False):
+            disableLogFiles = False,
+        ):
         
         dotenv.load_dotenv(".env")
         self.discoverRecursive = discoverRecursive
@@ -56,7 +58,7 @@ class BaseApp:
         
         self.isStopped = False
         
-        
+        self.setApplicationName(applicationName)
         
         self.logger = logging.getLogger(__name__)
         
@@ -69,6 +71,12 @@ class BaseApp:
         log_files = self.getLogFiles()
         for file in log_files:
             os.remove(file)
+    
+    def setApplicationName(self, applicationName):
+        self.applicationName = applicationName
+        
+    def getApplicationName(self):
+        return self.applicationName
     
     def getLogFiles(self):
         log_files = os.listdir(self.config["log_destination"])
