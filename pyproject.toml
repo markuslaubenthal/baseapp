@@ -10,6 +10,7 @@ python = "^3.8"
 click = "^8.1.7"
 pytest = "^7.4.0"
 python-dotenv = "^1.0.0"
+click-shell = "^2.1"
 
 
 [build-system]

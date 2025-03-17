@@ -5,7 +5,6 @@ import re
 from .LazyGroup import LazyGroup
 from multiprocessing import Process
 
-
 pattern = re.compile(r'(?<!^)(?=[A-Z])')
 def camel_to_snake(name):
     return pattern.sub('_', name).lower()

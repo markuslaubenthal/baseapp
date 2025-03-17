@@ -1,5 +1,6 @@
 import click
 import logging
+from click_shell import shell
 
 class AppCLIBuilder:
     def __init__(self, app):
@@ -21,7 +22,8 @@ class AppCLIBuilder:
             self.app.logger.debug(f"Log level set to {value}")
     
     def build(self):
-        @click.group()
+        # @click.group()
+        @shell(prompt='baseapp> ')
         @click.option('--debug/--no-debug', is_flag=True, callback=self.setDebug,
             expose_value=False, is_eager=True)
         @click.option('--log-level', expose_value=False, is_eager=True, callback=self.setLogLevel,
