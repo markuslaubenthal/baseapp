@@ -1,7 +1,7 @@
-from typing import Generic
-from .BaseRegistryObject import BaseRegistryObject, TypeRegistryObject
-from .ExecutorState import ExecutorState
 import logging
+from typing import Generic
+
+from baseapp.registry.BaseRegistryObject import TypeRegistryObject
 
 class Registry(Generic[TypeRegistryObject]):
     logger = logging.getLogger(__name__)

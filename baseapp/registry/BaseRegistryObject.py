@@ -1,7 +1,8 @@
-from typing import TypeVar
-from .Parameter import Parameter
 import logging
+from typing import TypeVar
 from copy import copy
+
+from baseapp.registry.Parameter import Parameter
 
 class BaseRegistryObject(object):
     """

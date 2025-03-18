@@ -1,5 +1,4 @@
-import logging
-from ..BaseRegistryObject import BaseRegistryObject
+from baseapp.registry.BaseRegistryObject import BaseRegistryObject
 
 class BaseRoutine(BaseRegistryObject):
     name = "BaseRoutine"

@@ -3,7 +3,8 @@ import inspect
 import logging
 import os
 import sys
-from typing import Generic, List, TypeVar, get_args, get_origin
+
+from typing import Generic, List, TypeVar, get_args
 
 BaseClass = TypeVar("BaseClass")
 

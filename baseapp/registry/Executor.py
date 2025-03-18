@@ -1,10 +1,11 @@
 from multiprocessing import Process, Event, Value
 import logging
 import signal
-from .ExecutorState import ExecutorState
 import ctypes
 import random
 import time
+
+from baseapp.registry.ExecutorState import ExecutorState
 
 class Executor:
     def __init__(self):

@@ -1,6 +1,7 @@
-from ..BaseRegistryObject import BaseRegistryObject
 import logging
-from ..ExecutorState import ExecutorState
+
+from baseapp.registry.BaseRegistryObject import BaseRegistryObject
+from baseapp.registry.ExecutorState import ExecutorState
 
 class BaseService(BaseRegistryObject):
     __start_in_main_thread__ = False

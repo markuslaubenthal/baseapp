@@ -1,5 +1,6 @@
-import click
 import re
+
+import click
 
 pattern = re.compile(r'(?<!^)(?=[A-Z])')
 def camel_to_snake(name):

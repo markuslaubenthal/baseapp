@@ -1,5 +1,6 @@
-import click
 import logging
+
+import click
 from click_shell import shell
 
 class AppCLIBuilder:

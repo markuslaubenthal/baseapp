@@ -1,5 +1,7 @@
-from typing import Generic, TypeVar, get_args
 import os
+from typing import Generic, TypeVar, get_args
+
+
 T = TypeVar("T")
 
 class Parameter(Generic[T]):
