@@ -40,9 +40,13 @@ class BaseApp:
             self.config["log_destination"] = logDestination
             
         self.logFormat = self.config["log_format"]
+        
+        logLevel = self.config["log_level"]
+        if isinstance(logLevel, str):
+            logLevel = logging.getLevelNamesMapping()[logLevel.upper()]
         logging.basicConfig(
             format=self.logFormat,
-            level=logging.getLevelName(self.config["log_level"])
+            level=logging.getLevelName(logLevel)
         )
         
         self.pp = pprint.PrettyPrinter(indent=4)
