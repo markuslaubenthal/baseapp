@@ -23,7 +23,7 @@ class BaseApp:
     def __init__(
             self,
             applicationName = "BaseApp",
-            configFile = "config/conf.yaml",
+            configFile = "config/conf.yaml", # Not yet supported
             enableRoutineDiscovery = True,
             enableServiceDiscovery = True,
             discoverRecursive = False,
