@@ -26,8 +26,8 @@ To use BaseApp, you need to implement your own routines and services in the `rou
 
 ```python
 # routines/MyRoutine.py
-from baseapp.registry.routines import BaseRoutine
-from baseapp.registry import Parameter
+from baseapp import BaseRoutine
+from baseapp import Parameter
 
 class MyRoutine(BaseRoutine):
     name = "MyRoutine"
@@ -40,12 +40,22 @@ class MyRoutine(BaseRoutine):
         print(f"Result: {result}")
 ```
 
+The parameters can be set as CLI arguments with:
+
+```sh
+python start.py --param1 val --param2 val
+```
+
+They can alternatively be retrieved from the environment variables ```PARAM1```, ```PARAM2```respectively.
+
+By default the application will try to read the .env file in the working directory and get the environment variables. If the parameters are set via CLI parameters, they will override the environment variables. If neither is set, the default value will be used.
+
 And here is an example of how to implement a service:
 
 ```python
 # services/MyService.py
-from baseapp.registry.services import BaseService
-from baseapp.registry import Parameter
+from baseapp import BaseService
+from baseapp import Parameter
 import time
 
 class MyService(BaseService):
