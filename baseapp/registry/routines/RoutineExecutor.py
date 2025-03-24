@@ -2,6 +2,7 @@ from typing import Type
 
 from baseapp.registry.routines import BaseRoutine
 from baseapp.registry.Executor import Executor
+from baseapp.registry.ExecutorState import ExecutorState
 
 class RoutineExecutor(Executor):
     
@@ -12,11 +13,21 @@ class RoutineExecutor(Executor):
     
     def run(self, *args, **kwargs):
         super().run()
+        self.updateState(ExecutorState.STARTING)
         instance_id = self.createInstanceId()
         routineInstance = self.routine(instance_id)
         for name, param in kwargs.items():
             routineInstance.setParameter(name, param)
         
-        res = routineInstance.run()
+        self.updateState(ExecutorState.RUNNING)
+        try:
+            res = routineInstance.run()
+        except Exception as e:
+            self.logger.error("An error occured while running the routine")
+            self.logger.exception(e)
+            self.updateState(ExecutorState.ERROR)
+        else:
+            self.updateState(ExecutorState.FINISHED)
+            
         self.logger.debug("Result: %s", res)
         return res

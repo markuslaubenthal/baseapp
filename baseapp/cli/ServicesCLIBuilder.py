@@ -14,7 +14,7 @@ def camel_to_snake(name):
 class ServicesCLIBuilder:
     def __init__(self, registry: Registry[BaseService]):
         self.registry = registry
-            
+        
     def buildLazy(self, group: "click.group"):
         @group.group(name="services")
         def services():
@@ -41,7 +41,7 @@ class ServicesCLIBuilder:
                 executor_process = Process(target=executor.run)
                 self.registry.registerExecutor((executor, executor_process))
                 executor_process.start()
-                executor_process.join()
+                # executor_process.join()
                 
         cmd = click.command(name=cmdName)(cmd)
         
