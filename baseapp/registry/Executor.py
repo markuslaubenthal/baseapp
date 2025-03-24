@@ -9,7 +9,6 @@ from baseapp.registry.ExecutorState import ExecutorState
 
 class Executor:
     def __init__(self):
-        # super().__init__()
         self.instance = None
         self.stopEvent = Event()
         self.logger = logging.getLogger(__name__)
@@ -49,20 +48,3 @@ class Executor:
     def stop(self):
         self.stopEvent.set()
         signal.signal(signal.SIGINT, signal.SIG_DFL)
-        
-        
-# class Executor:
-#     def __init__(self) -> None:
-#         self.instance = None
-#         self.stopEvent = Event()
-#         self.logger = logging.getLogger("baseapp.Executor")
-        
-#     def run(self):
-#         pass
-    
-#     def stop(self):
-#         self.stopEvent.set()
-    
-#     # TODO: Fix this
-#     def join(self):
-#         return True
