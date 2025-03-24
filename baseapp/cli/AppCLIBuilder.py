@@ -33,7 +33,7 @@ class AppCLIBuilder:
     
     def build(self):
         # @click.group()
-        @shell(prompt=f'{self.app.getApplicationName()}> ')
+        @shell(prompt=f'{self.app.getApplicationName()}> ', on_finished=self.app.onShellExit)
         @click.option('--debug/--no-debug', is_flag=True, callback=self.setDebug,
             expose_value=False, is_eager=True)
         @click.option('--log-level', expose_value=False, is_eager=True, callback=self.setLogLevel,

@@ -1,4 +1,5 @@
 import multiprocessing
+import time
 
 try:
     # TODO: Give a warning.
@@ -17,6 +18,7 @@ from baseapp.cli import AppCLIBuilder, RoutinesCLIBuilder, ServicesCLIBuilder, L
 from baseapp.registry import Discovery, Registry
 from baseapp.registry.routines import BaseRoutine
 from baseapp.registry.services import BaseService
+from baseapp.registry import ExecutorState
 
 import pprint
 class BaseApp:
@@ -182,6 +184,9 @@ class BaseApp:
                 if process.is_alive():
                     process.join()
     
+    def onShellExit(self, ctx):
+        self.stop()
+    
     def stop(self):
         if self.isStopped:
             return
@@ -193,13 +198,27 @@ class BaseApp:
         self.waitForAll()
         self.logger.debug("Everything shutdown")
         
-        
-        
-    
     def run(self, *args, **kwargs):
         try:
-            self.cli(standalone_mode=False)#, *args, **kwargs)
-        except click.exceptions.Abort:
+            try:
+                self.cli(standalone_mode=False)#, *args, **kwargs)
+            except click.exceptions.Abort as e:
+                raise KeyboardInterrupt()
+            except click.exceptions.ClickException as e:
+                e.show()
+            
+            running = True
+            # This loop should probably by async and/or handled with events
+            while running:
+                executorStates = [executor.getCurrentState().value < 100 for executor, process in self.routineRegistry.executors]
+                executorStates += [executor.getCurrentState().value < 100 for executor, process in self.serviceRegistry.executors]
+                running = any(executorStates)
+                if not running:
+                    break
+                time.sleep(0.5)
+                
+            self.waitForAll()
+        except KeyboardInterrupt:
             self.logger.critical("KeyboardInterrupt")
-        except click.exceptions.ClickException as e:
-            e.show()
+            self.stop()
+        self.waitForAll()
