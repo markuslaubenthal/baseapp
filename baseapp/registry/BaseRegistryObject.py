@@ -29,14 +29,10 @@ class BaseRegistryObject(object):
         loggerName = name + "." + str(self.id)
         self.logger = logging.getLogger(loggerName)
         
-        logToFile = True
-        if self.id is None:
-            logToFile = False
         logger.create(
             name + str(self.id),
             loggerName,
             logger.ColorCodes.TextColorCodes.random(),
-            logToFile=logToFile
         )
         classMembers = dir(self.__class__)
         for member in classMembers:

@@ -36,6 +36,9 @@ class BaseApp:
         self.discoverRecursive = discoverRecursive
         # Logging stuff
         self.disableLogFiles = disableLogFiles
+        from baseapp.logger import Logger
+        Logger.disableLogFiles = disableLogFiles
+        
         self.config = self.loadDefaultConfig()
         if logDestination is not None:
             self.config["log_destination"] = logDestination
