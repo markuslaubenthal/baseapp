@@ -2,7 +2,7 @@ import pytest
 import os
 from unittest import mock
 from .fixtures.MockRoutine import mockRoutineProvider, MockRoutine
-from baseapp.registry import Parameter
+from baseapp.cli.Parameter import Parameter
 
 class TestRoutineParameters:
     
@@ -67,7 +67,7 @@ class TestRoutineParameters:
     
     @mock.patch.dict(os.environ, {"INT_A": "8", "INT_B": "9"})
     def test_parameter(self):
-        from baseapp.registry import Parameter
+        from baseapp.cli.Parameter import Parameter
         a = Parameter[int]("a", "This is a parameter", default = 1).env("INT_A")
         a.init()
         assert a.value == 8

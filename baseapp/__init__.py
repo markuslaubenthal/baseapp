@@ -1,4 +1,4 @@
 from .BaseApp import BaseApp
-from .registry import Parameter
-from .registry.routines import BaseRoutine
-from .registry.services import BaseService
+from .registry.routines import BaseRoutine as BaseRoutine
+from .registry.services import BaseService as BaseService
+from .cli.Parameter import Parameter

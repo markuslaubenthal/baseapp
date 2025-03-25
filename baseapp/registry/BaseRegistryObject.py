@@ -2,7 +2,7 @@ import logging
 from typing import TypeVar
 from copy import copy
 
-from baseapp.registry.Parameter import Parameter
+from baseapp.cli.Parameter import Parameter
 from baseapp import logger
 
 class BaseRegistryObject(object):

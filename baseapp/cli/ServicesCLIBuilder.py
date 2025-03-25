@@ -46,6 +46,8 @@ class ServicesCLIBuilder:
         cmd = click.command(name=cmdName)(cmd)
         
         for name, param in service.getParameters():
+            if param.name is not None:
+                name = param.name
             cmd = click.option(
                 f'--{name}',
                 default=param.default,
