@@ -5,11 +5,12 @@ from baseapp.logger.ColorCodes import Codes as CC, HelperCodes, TextColorCodes a
 # The actual logger should be defined as the root logger and handle all logs for a specific child process
 # This is just a simple logger that can be used to log from the routines and services directly
 def create(
-        appName: str,
+        programName: str,
         loggerName: str,
         color: CC = TCC.WHITE,
         logFormat: str = '%(asctime)s [%(levelname)s] [%(name)s] %(message)s',
-        fileName: str = 'logs/{name}.log'
+        fileName: str = 'logs/{name}.log',
+        logToFile: bool = True,
     ):
     
     colorFormatter = logging.Formatter(f"{color.value}{logFormat}{HelperCodes.RESET.value}")
@@ -19,8 +20,8 @@ def create(
     std_handler = logging.StreamHandler()
     std_handler.setFormatter(colorFormatter)
     logger.addHandler(std_handler)
-    if fileName is not None:
-        fileName = fileName.format(name=appName)
+    if fileName is not None and logToFile:
+        fileName = fileName.format(name=programName)
         fileHandler = logging.FileHandler(fileName, mode='a', encoding=None, delay=False)
         fileHandler.setFormatter(formatter)
         logger.addHandler(fileHandler)
