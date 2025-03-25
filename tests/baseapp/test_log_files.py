@@ -1,7 +1,7 @@
 import pytest
 from baseapp import BaseApp
 
-from .fixtures.ChildApp import childApp as app
+from .fixtures.ChildApp import childAppWithLogsEnabled as app
 from click.testing import CliRunner
 from unittest import mock
 import os
