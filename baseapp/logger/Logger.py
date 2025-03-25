@@ -1,10 +1,12 @@
-import logging
+import logging, os
 from baseapp.logger.ColorCodes import Codes as CC, HelperCodes, TextColorCodes as TCC
 
 # This is just for testing purposes
 # The actual logger should be defined as the root logger and handle all logs for a specific child process
 # This is just a simple logger that can be used to log from the routines and services directly
 
+# super dirty. Needs to be refactored ASAP. This is just to make the test pass on gitlab
+logDestination = None
 disableLogFiles = False
 
 def create(
@@ -15,6 +17,10 @@ def create(
         fileName: str = 'logs/{name}.log',
     ):
     
+    
+    if logDestination is not None:
+        fileName = os.path.join(logDestination, "{name}.log")
+        
     colorFormatter = logging.Formatter(f"{color.value}{logFormat}{HelperCodes.RESET.value}")
     formatter = logging.Formatter(logFormat)
     logger = logging.getLogger(loggerName)
