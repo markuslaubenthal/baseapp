@@ -2,7 +2,8 @@ import logging
 from typing import TypeVar
 from copy import copy
 
-from baseapp.registry.Parameter import Parameter
+from baseapp.cli.Parameter import Parameter
+from baseapp import logger
 
 class BaseRegistryObject(object):
     """
@@ -23,16 +24,22 @@ class BaseRegistryObject(object):
         self.name = name
         self.description = description
         self.id = id
-        self.logger = logging.getLogger(
-            self.__class__.__module__ + "." + self.__class__.__name__ + "." + str(self.id))
+        name = self.name if self.name is not None else self.__class__.__name__
+        
+        loggerName = name + "." + str(self.id)
+        self.logger = logging.getLogger(loggerName)
+        
+        logger.create(
+            name + str(self.id),
+            loggerName,
+            logger.ColorCodes.TextColorCodes.random(),
+        )
         classMembers = dir(self.__class__)
         for member in classMembers:
             if issubclass(type(getattr(self.__class__, member)), Parameter):
                 self.logger.debug("Copying parameter: %s", member)
                 parameter = super().__getattribute__(member)
                 super().__setattr__(member, copy(parameter))
-                # super().__getattribute__(member).init()
-        
 
     def __str__(self):
         """

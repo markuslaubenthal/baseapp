@@ -1,5 +1,5 @@
-from baseapp.registry.routines import BaseRoutine
-from baseapp.registry import Parameter
+from baseapp import BaseRoutine
+from baseapp import Parameter
 import pytest
 
 class MockRoutine(BaseRoutine):

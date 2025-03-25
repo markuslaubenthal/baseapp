@@ -1,5 +1,5 @@
 from baseapp.registry.services import BaseService
-from baseapp.registry import Parameter
+from baseapp.cli.Parameter import Parameter
 import pytest
 import time
 

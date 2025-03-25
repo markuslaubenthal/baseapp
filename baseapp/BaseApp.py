@@ -18,7 +18,6 @@ from baseapp.cli import AppCLIBuilder, RoutinesCLIBuilder, ServicesCLIBuilder, L
 from baseapp.registry import Discovery, Registry
 from baseapp.registry.routines import BaseRoutine
 from baseapp.registry.services import BaseService
-from baseapp.registry import ExecutorState
 
 import pprint
 class BaseApp:
@@ -153,7 +152,6 @@ class BaseApp:
                 self._discoverServices(directory, recursive=self.discoverRecursive)
         
     def initCLI(self):
-        self.logger.debug("Building CLI")
         self.cli = AppCLIBuilder(self).build()
         cli = self.cli
         RoutinesCLIBuilder(self.routineRegistry).buildLazy(group=self.cli)

@@ -4,25 +4,36 @@ BaseApp is a Python application framework designed to facilitate the creation an
 
 ## Features
 
+- Fast bootstrapping of parameterized scripts
 - Routine and Service discovery
 - Parameter management with environment variable support
-- CLI integration using Click
-- Logging support with configurable log levels and destinations
+- CLI integration using click and click-shell
+- (WIP) Logging support with configurable log levels and destinations
 - Graceful shutdown of routines and services
 
 ## Installation
 
-To install the dependencies, use `poetry`:
+To install the baseapp package with pip:
 
-```sh
-poetry install
 ```
+pip install -i https://gitlab.laubenthal.me/api/v4/projects/7/packages/pypi/simple baseapp
+```
+
+The package is currently only available on my public gitlab, but will be soon available in the default PyPI.
 
 ## Usage
 
 ### Implementing Routines and Services
 
 To use BaseApp, you need to implement your own routines and services in the `routines` and `services` directories respectively. Here is an example of how to implement a routine:
+
+```python
+# start.py
+from baseapp import BaseApp
+app = BaseApp("MyApp")
+app.start()
+```
+
 
 ```python
 # routines/MyRoutine.py
@@ -99,6 +110,35 @@ Example:
 python start.py routines run my_routine --param1=5 --param2=10
 ```
 
+### Parameters
+
+Supported Parameter types are:
+- int
+- str
+- bool
+- any other primitive datatypes
+
+Parameters can be given a name to set in the CLI.
+If no name is provided, the variable name will be transformed to camel_case and used as the name.
+
+Booleans can be activated in the CLI command
+```python
+class MyRoutine(BaseRoutine):
+    name = "MyRoutine"
+    
+    myBoolean = Parameter[bool]("myBoolean")
+    myOtherBoolean = Parameter[bool]()
+    varWithoutName = Parameter[str]()
+    a_float = Parameter[float]()
+```
+
+```bash
+python start.py my_routine \
+    --myBoolean \
+    --my_other_boolean \
+    --var_without_name="VALUE" \
+    --a_float=7.5
+```
 
 ### Configuration
 

@@ -52,6 +52,8 @@ class RoutinesCLIBuilder:
         
         for name, param in routine.getParameters():
             # if parameter is boolean, make it a flag
+            if param.name is not None:
+                name = param.name
             if param.type == bool:
                 cmd = click.option(
                     f'--{name}', f"{name}",
