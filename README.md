@@ -12,6 +12,7 @@ BaseApp is a Python application framework designed to facilitate the creation an
 - Graceful shutdown of routines and services
 
 ## Roadmap
+
 - Add a web interface to manage routines and services.
 - Refactor the logging section completely.
 - Refactor how executors work and how the app communicates with different components.
