@@ -4,6 +4,7 @@ from threading import Thread
 from baseapp.registry.Executor import Executor
 from baseapp.registry.services import BaseService
 from baseapp.registry.ExecutorState import ExecutorState
+import os, signal
 
 class ServiceExecutor(Executor):
     
@@ -57,6 +58,16 @@ class ServiceExecutor(Executor):
                 try:
                     # Try soft shutdown if stop method is implemented
                     self.instance.stop()
+                    import psutil
+
+                    current_process = psutil.Process()
+                    children = current_process.children(recursive=True)
+                    for child in children:
+                        try:
+                            os.kill(child.pid, signal.SIGTERM)
+                        except Exception as e:
+                            pass
+                        
                 except NotImplementedError:
                     self.logger.debug("Stop method not implemented")
                     
@@ -80,7 +91,6 @@ class ServiceExecutor(Executor):
             self.logger.debug("Thread still alive. Terminating")
             self.updateState(ExecutorState.TERMINATED)
             
-            import os, signal
             pid = os.getpid()
             os.kill(pid, signal.SIGTERM)
             return
