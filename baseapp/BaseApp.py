@@ -31,9 +31,10 @@ class BaseApp:
             discoverRecursive = False,
             logDestination = None,
             disableLogFiles = False,
+            envFile = ".env",
         ):
         
-        dotenv.load_dotenv(".env")
+        dotenv.load_dotenv(envFile)
         self.discoverRecursive = discoverRecursive
         # Logging stuff
         self.disableLogFiles = disableLogFiles
