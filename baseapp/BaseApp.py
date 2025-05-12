@@ -13,6 +13,7 @@ import click
 import dotenv
 import os
 import atexit
+from typing import Union
 
 from baseapp.cli import AppCLIBuilder, RoutinesCLIBuilder, ServicesCLIBuilder, LogsCLIBuilder
 from baseapp.registry import Discovery, Registry
@@ -143,7 +144,7 @@ class BaseApp:
         for service in services:
             self.serviceRegistry.register(service)
     
-    def setLogLevel(self, level: str | int):
+    def setLogLevel(self, level: Union[str, int]):
         self.log_level = level
         root_logger = logging.getLogger()
         root_logger.setLevel(level)

@@ -1,4 +1,5 @@
 import logging
+from typing import Union
 
 import click
 from click_shell import shell
@@ -14,7 +15,7 @@ class AppCLIBuilder:
         if value:
             click.echo("Operating in debug mode")
     
-    def setLogLevel(self, ctx, param, logLevel: str | int):
+    def setLogLevel(self, ctx, param, logLevel: Union[str, int]):
         if isinstance(logLevel, str):
             try:
                 logLevel = logging.getLevelNamesMapping()[logLevel.upper()]
